@@ -97,7 +97,7 @@ $(document).ready(function () {
             <label class="form-check-label" for="${dynamicTaskID}">${task.name} (#${task.id}) </label>  
             <button data-task='${task.id}' type="button" class="trinti btn btn-close ps-3 float-end" title="Close" ></button>
             <button type="button" class="fa fa-pencil edit float-end ps-2" aria-hidden="true" title="Edit"></button>   
-            <button type="button" class="fa fa-check complete float-end" aria-hidden="true" title="Complete"></button>        
+            <button type="button" id="compl" class="fa fa-check complete float-end" aria-hidden="true" title="Complete"></button>        
         </li>`);
 
         newTaskCount++; // newTaskCount = newTaskCount + 1;
@@ -187,7 +187,7 @@ $(document).ready(function () {
     }); */
 
 
-    $(".complete").click(function () {
+    $("#compl").click(function () {
         console.log("veikia");
         // $(".complete").addClass("green");
         // event.preventDefault();
