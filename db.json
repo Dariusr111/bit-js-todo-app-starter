@@ -1,20 +1,44 @@
 {
-  "tasks": [{
-      "id": 1,
-      "name": "Įsirašyti JSON Server",
-      "status": "inprogress"
-    },
-
+  "tasks": [
     {
-      "id": 2,
-      "name": "Įsirašyti gauti duomenis GET metodu iš duombazės",
-      "status": "inprogress"
+      "name": "Padaryti namu darbus.",
+      "status": "inprogress",
+      "id": 1
     },
-
     {
-      "id": 3,
-      "name": "Atvaizduoti gautus duomenis užduočių lentelėje",
-      "status": "inprogress"
+      "name": "Nueiti i parduotuve.",
+      "status": "inprogress",
+      "id": 2
+    },
+    {
+      "name": "",
+      "status": "inprogress",
+      "id": 3
+    },
+    {
+      "name": "Some thing.",
+      "status": "inprogress",
+      "id": 4
+    },
+    {
+      "name": "",
+      "status": "inprogress",
+      "id": 5
+    },
+    {
+      "name": "",
+      "status": "inprogress",
+      "id": 6
+    },
+    {
+      "name": "",
+      "status": "inprogress",
+      "id": 7
+    },
+    {
+      "name": "",
+      "status": "inprogress",
+      "id": 8
     }
   ]
 }
