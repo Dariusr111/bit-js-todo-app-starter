@@ -24,13 +24,13 @@ Pavyzdinius dizaino failus galime rasti /design/design-example-1.png faile.
 * Sukurti HTML formą su duomenims
 * Sukurti norimą dizainą su HTML ir CSS.
 * Sukurti jQuery funkciją, kuri gauna duomenis
-
 * Sukurti JSON serverį, kuris saugo duomenis į duomenų bazę
 * Sukurti jQuery funkciją, kuri išsaugo duomenis
 * Sukurti jQuery funkciją, kuri pažymi užduotį kaip atliktą
 * Sukurti jQuery funkciją, užduoties ištryninimui
+* Sukurti jQuery funkciją, kuri pažymi užduotį kaip atliktą
 * Teisingas ir naudotinas atvaizdavimas mobile/tablet ir desktop versijose
-** Kokie turimi breakpoints?
+
 
 
 ### Papildoma informacija
@@ -40,6 +40,8 @@ Užduoties galimi statusai:
 
 
 ### Papildomos užduotys* 
+ - Vietoj confirm ir alert funkcijų panaudoti - https://sweetalert2.github.io/
+ - Papildomi informaciniai pranešimai - http://ksylvest.github.io/jquery-growl/ arba - https://github.com/jaredreich/notie
  - Panaudoti jQuery Data Tables biblioteką.
  - Panaudoti Webpack + Saas kompiliavimui su `npm install --save bootstrap`
  - Galimybė pridėti užduoties atlikimo "deadline"

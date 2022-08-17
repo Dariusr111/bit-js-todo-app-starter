@@ -9,12 +9,13 @@
 /* Standartinė jQuery funkcija */
 /* DOM - Document Object Model */
 let newTaskCount = 0;
+let allTasks = [];
 $(document).ready(function () {
     // Palaukia, kol visas HTML/CSS kodas bus užkrautas iš serverio naršyklėje.
 
     // Iškviečiame getTasks funkciją
     getTasks();
-    // saveTask();
+
 
     /* Delete button event listener */
     /* Negalime, naudoti, $('.trinti').click() - nes šie elementai sukuriami asinchroniškai ir dinamiškai */
@@ -34,6 +35,67 @@ $(document).ready(function () {
         }
 
     });
+
+
+
+    /* Šis užrašymas neveikia, nes .task-checkbox elementai buvo sukurti dinamiškai */
+   /*  $(".task-checkbox").change(function() {
+        alert("Checkbox Paspaustas");
+    }); */
+
+     /* Task Completed Checkbox Event listener */
+     $('#task_list').on('change', '.task-checkbox', function (event) {
+        // console.log("On change funkcija");
+        // Gauname ar musu laukelis pažymėtas ar ne.        
+        console.log(this.checked); 
+        // this.checked grazina true/false reiksme, priklausomai nuo checkbox stadijos.
+        let status = this.checked;
+        let taskID = $(this).parent('li').data('task');
+
+        $(this).parent('li').toggleClass('task-done');
+
+        /* Toggle Class pakeicia sia logika, trumpesne forma */
+        // if(status) {
+        //     $(this).parent('li').addClass('task-done');
+        // } else {
+        //     $(this).parent('li').removeClass('task-done');
+        // }
+
+       
+        taskStatusUpdate(taskID, status);
+
+        
+        // console.log("Pasirinkta užduotis: " + taskID);
+    });
+
+    function taskStatusUpdate(taskID, status) {
+        let taskStatusValue;
+        let apiURL = 'http://localhost:3000/tasks/' + taskID;
+
+        if(status === true) {
+            taskStatusValue = "done";
+        } else if(status === false) {
+            taskStatusValue = "inprogress";
+        }
+
+        // PUT - atnaujina visus laukelius, jei laukelis neegzistuoja jis yra sunaikinamas.
+        // PATCH - atnaujina tik tuos laukelius, kuriuos peraveme kaip parametrus.
+        $.ajax({
+            url: apiURL,
+            method: "PATCH", 
+            data: {
+                status: taskStatusValue
+            },
+            error: function() {
+                $.growl.notice({ title: "Error", message: "wasn't updated", location: 'br' });
+                console.log("Error");
+            },
+            success: function() {
+                $.growl.notice({ title: "Task", message: "was updated", location: 'br' });
+            }
+          });
+    }
+
 
     /* Click - Event Listener PVZ. */
     /* $("#add_task").click(function(event) {
@@ -62,6 +124,9 @@ $(document).ready(function () {
         // Gauname input laukelio reiksme ir issaugome ja kaip kintamaji
         let taskName = taskInput.val();
 
+            // Isvalome input laukelio reiksme (value)
+            taskInput.val("");    
+
         //Sukuriame task objekta
         let task = {
             "name": taskName,
@@ -74,14 +139,6 @@ $(document).ready(function () {
     });
 
 
-    // Nauja funkcija atvaizduoti naujai pridetai uzduociai.
-    /* task - Užduoties objektas - 
-    {
-        "name" : "name",
-        "status" : "status",
-        "id" : 3
-    }
-    */
 
     function addTask(task) {
         // console.log(taskName);
@@ -89,15 +146,23 @@ $(document).ready(function () {
 
         let dynamicTaskID = `checkbox_${newTaskCount}`;
 
-        // taskList.append('Labas');
+        let taskInputAttributes = "";
+        let extraTaskClasses = "";
+
+        if(task.status === 'done') {
+            taskInputAttributes = "checked";
+            extraTaskClasses = "task-done";
+        }
+
         /* Funkcija prepend, prideda papildomus html elementus i elemento pradzia */
         taskList.prepend(`
-        <li class="list-group-item">
-            <input class="form-check-input me-1" type="checkbox" value="" id="${dynamicTaskID}">
-            <label class="form-check-label" for="${dynamicTaskID}">${task.name} (#${task.id}) </label>  
-            <button data-task='${task.id}' type="button" class="trinti btn btn-close ps-3 float-end" title="Close" ></button>
-            <button type="button" class="fa fa-pencil edit float-end ps-2" aria-hidden="true" title="Edit"></button>   
-            <button type="button" id="compl" class="fa fa-check complete float-end" aria-hidden="true" title="Complete"></button>        
+        <li data-task='${task.id}' class="list-group-item ${extraTaskClasses}">
+            <input class="form-check-input me-1 task-checkbox" ${taskInputAttributes} type="checkbox" value="" id="${dynamicTaskID}">
+            <label class="form-check-label" for="${dynamicTaskID}">${task.name} (#${task.id})</label>  
+            <button data-task='${task.id}' type="button" class="trinti btn btn-close float-end"></button>
+
+            <button data-task='${task.id}' type="button" class="fa fa-pencil edit float-end ps-2" aria-hidden="true" title="Edit"></button>   
+            <button data-task='${task.id}' type="button" class="complete fa fa-check float-end" aria-hidden="true" title="Complete"></button>        
         </li>`);
 
         newTaskCount++; // newTaskCount = newTaskCount + 1;
@@ -110,7 +175,8 @@ $(document).ready(function () {
         /* Išsiunčiame užklausą ir gauname grąžintus duomenis. */
         $.get(apiURL, function (data) {
             // Atspausdiname gauta rezultata, konsoleje
-            // console.log(data);
+            console.log(data);
+            allTasks = data;
             /* Pereiname per visus grazinto masyvo elementus */
             for (let i = 0; i < data.length; i++) {
                 // console.log(data[i]);
@@ -139,10 +205,14 @@ $(document).ready(function () {
             */
             addTask(data);
             // alert("2");
+        }).then(function() {
+            $.growl.notice({ title: "Task", message: "was created", location: 'br',  duration: 10000 });
         });
 
         // alert("3");
     }
+
+
 
     function deleteTask(taskID) {
         // Uzduoties trynimas.
@@ -156,16 +226,15 @@ $(document).ready(function () {
             url: apiURL,
             method: "DELETE",
             data: {},
-            error: function () {
+            error: function() {
                 console.log("Error");
+                $.growl.error({ message: "The kitten is attacking!", location: 'br' });
             },
-            success: function () {
+            success: function() {
+                $.growl.error({ title: "Task", message: "was deleted", location: 'br', duration: 10000 });
                 console.log("Success");
             }
-            // dataType: "html"
-        });
-
-        //   alert("Duomenys uzsikrove");
+          });
     }
 
 
@@ -187,10 +256,29 @@ $(document).ready(function () {
     }); */
 
 
-    $("#compl").click(function () {
+    // $("#compl").click(function () {
+    //     $(this).css("color", "green");
+    //     console.log("veikia");
+    //     // $(".complete").addClass("green");
+    //     // event.preventDefault();
+    // });
+
+
+    /* Complete button event listener */
+    /* Negalime, naudoti, $('.complete').click() - nes šie elementai sukuriami asinchroniškai ir dinamiškai */
+    $('#task_list').on('click', '.complete', function (event) {
+        // alert("Coming Soon");
         console.log("veikia");
-        // $(".complete").addClass("green");
-        // event.preventDefault();
+        $(this).addClass("green");
+        $(this).parents("ul").addClass("green_ul");
+        $(this).parent("li").addClass("green_li");
+
+
     });
+
+
+
+
+
 
 });

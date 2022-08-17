@@ -1,4 +1,5 @@
 // alert('hello');
+// bandymas su vanila.js codinti
 
 function addTask() {
 

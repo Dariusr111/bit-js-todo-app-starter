@@ -31,14 +31,23 @@ body {
     font-size: 24px;
 }
 
-.green{
+.green {
     color: green;
+    border: none;
+    font-size: 34px;
+
+}
+
+
+.task-done label {
+    text-decoration: line-through;
+    font-weight: bold;
 }
 
 .complete:hover {
     color: #495057;
     background-color: transparent;
-    text-decoration: none;
+
 }
 
 .trinti {
